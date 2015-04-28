@@ -51,6 +51,7 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.29'
         // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+	compile "org.mongodb:mongo-java-driver:2.13.1"
     }
 
     plugins {
@@ -67,7 +68,9 @@ grails.project.dependency.resolution = {
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"
 
-        runtime ":mongodb:3.0.3"
+        compile (":mongodb:3.0.3") {
+		excludes "mongo-java-driver"
+	}
 
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:1.9.0"

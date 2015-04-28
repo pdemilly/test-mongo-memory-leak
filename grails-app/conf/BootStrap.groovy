@@ -7,6 +7,9 @@ class BootStrap {
 	def init = { servletContext ->
 
 		def total = grailsApplication.config.'test_leak_sample_size'
+		if (Customer.count() >= total)
+		   return
+
 		def nosize = 10**7
 
 

@@ -7,7 +7,7 @@ You can change the size of the sample in Config.groovy (see end of file)
 When loading, Bootstrap will create a sample of random Customers
 when done access the URL to start loading those records through GORM
 
-http://localhost:8080/test-mongo-memory-leak/leak
+http://localhost:8080/test-mongo-memory-leak/test/[leak,noleak]
 
 
 I can be reached at pdemilly at gmail.com
