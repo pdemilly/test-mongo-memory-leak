@@ -4,43 +4,50 @@ class LeakService {
 	
 	static transaction = false
 
-	def runtime = new Runtime()
 	def mongo
 	def grailsApplication
 
+	def db
+	def total
+	def progress
+	def runtime
+
+	private init () {
+		db = mongo.getDB('leak-test')
+		total = grailsApplication.config.'test_leak_sample_size'
+		progress = new ProgressIndicator (total)
+		runtime = new Runtime()
+		println "sample size: $total"
+	}
+
 	def leak () {
 		
-		def total = grailsApplication.config.'test_leak_sample_size'
-		def p = new ProgressIndicator (total)
-		def db = mongo.getDB('leak-test')
+		init()
 
-		println "sample size: $total"
-		def list = mongo.getDB('leak-test').customers.find([:], [ customerNo: 1]).limit (total)
-
-		list.eachWithIndex { rec, n ->
+		sampleData.eachWithIndex { rec, n ->
 			def cust = Customer.findByCustomerNo (rec.customerNo)
-			p.showProgress ()
+			progress.showProgress ()
 		}
 
-		p.showProgress ()
-		return p.msgs
+		progress.showProgress ()
+		return progress.msgs
 	}
 
 	def noleak () {
 		
-		def total = grailsApplication.config.'test_leak_sample_size'
-		def p = new ProgressIndicator (total)
-		def db = mongo.getDB('leak-test')
+		init()
 
-		println "sample size: $total"
-		def list = db.customers.find([:], [ customerNo: 1]).limit (total)
-
-		list.eachWithIndex { rec, n ->
+		sampleData.eachWithIndex { rec, n ->
 			def cust = db.customers.findOne (customerNo: rec.customerNo)
-			p.showProgress ()
+			progress.showProgress ()
 		}
 
-		p.showProgress ()
-		return p.msgs
+		progress.showProgress ()
+		return progress.msgs
+	}
+
+	def getSampleData () {
+		// let's make sure we have enough memory for our test list
+		return db.customers.find([:], [ customerNo: 1]).limit (total).collect { it }
 	}
 }
