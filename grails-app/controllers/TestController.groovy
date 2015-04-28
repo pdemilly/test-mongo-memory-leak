@@ -4,6 +4,7 @@ class TestController {
 
 	def index () {
 		return leak ()
+	}
 
 	def leak () {
 		def result = leakService.leak ()
